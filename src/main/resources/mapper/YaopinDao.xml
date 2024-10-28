@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.YaopinDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yaopin_name as yaopinName
+        ,a.yaopin_uuid_number as yaopinUuidNumber
+        ,a.yaopin_photo as yaopinPhoto
+        ,a.shengchanchangjia as shengchanchangjia
+        ,a.yaopin_types as yaopinTypes
+        ,a.yaopin_kucun_number as yaopinKucunNumber
+        ,a.yaopin_jinjia_money as yaopinJinjiaMoney
+        ,a.yaopin_new_money as yaopinNewMoney
+        ,a.yaopin_gongxiao_content as yaopinGongxiaoContent
+        ,a.yaopin_jinji_content as yaopinJinjiContent
+        ,a.yaopin_zhuyi_content as yaopinZhuyiContent
+        ,a.yaopin_content as yaopinContent
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.YaopinView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+
+        FROM yaopin  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.yaopinName != '' and params.yaopinName != null and params.yaopinName != 'null' ">
+                and a.yaopin_name like CONCAT('%',#{params.yaopinName},'%')
+            </if>
+            <if test=" params.yaopinUuidNumber != '' and params.yaopinUuidNumber != null and params.yaopinUuidNumber != 'null' ">
+                and a.yaopin_uuid_number like CONCAT('%',#{params.yaopinUuidNumber},'%')
+            </if>
+            <if test=" params.shengchanchangjia != '' and params.shengchanchangjia != null and params.shengchanchangjia != 'null' ">
+                and a.shengchanchangjia like CONCAT('%',#{params.shengchanchangjia},'%')
+            </if>
+            <if test="params.yaopinTypes != null and params.yaopinTypes != ''">
+                and a.yaopin_types = #{params.yaopinTypes}
+            </if>
+            <if test="params.yaopinKucunNumberStart != null and params.yaopinKucunNumberStart != ''">
+                <![CDATA[  and a.yaopin_kucun_number >= #{params.yaopinKucunNumberStart}   ]]>
+            </if>
+            <if test="params.yaopinKucunNumberEnd != null and params.yaopinKucunNumberEnd != ''">
+                <![CDATA[  and a.yaopin_kucun_number <= #{params.yaopinKucunNumberEnd}   ]]>
+            </if>
+             <if test="params.yaopinKucunNumber != null and params.yaopinKucunNumber != ''">
+                and a.yaopin_kucun_number = #{params.yaopinKucunNumber}
+             </if>
+            <if test="params.yaopinJinjiaMoneyStart != null ">
+                <![CDATA[  and a.yaopin_jinjia_money >= #{params.yaopinJinjiaMoneyStart}   ]]>
+            </if>
+            <if test="params.yaopinJinjiaMoneyEnd != null ">
+                <![CDATA[  and a.yaopin_jinjia_money <= #{params.yaopinJinjiaMoneyEnd}   ]]>
+            </if>
+            <if test="params.yaopinNewMoneyStart != null ">
+                <![CDATA[  and a.yaopin_new_money >= #{params.yaopinNewMoneyStart}   ]]>
+            </if>
+            <if test="params.yaopinNewMoneyEnd != null ">
+                <![CDATA[  and a.yaopin_new_money <= #{params.yaopinNewMoneyEnd}   ]]>
+            </if>
+            <if test=" params.yaopinGongxiaoContent != '' and params.yaopinGongxiaoContent != null and params.yaopinGongxiaoContent != 'null' ">
+                and a.yaopin_gongxiao_content like CONCAT('%',#{params.yaopinGongxiaoContent},'%')
+            </if>
+            <if test=" params.yaopinJinjiContent != '' and params.yaopinJinjiContent != null and params.yaopinJinjiContent != 'null' ">
+                and a.yaopin_jinji_content like CONCAT('%',#{params.yaopinJinjiContent},'%')
+            </if>
+            <if test=" params.yaopinZhuyiContent != '' and params.yaopinZhuyiContent != null and params.yaopinZhuyiContent != 'null' ">
+                and a.yaopin_zhuyi_content like CONCAT('%',#{params.yaopinZhuyiContent},'%')
+            </if>
+            <if test=" params.yaopinContent != '' and params.yaopinContent != null and params.yaopinContent != 'null' ">
+                and a.yaopin_content like CONCAT('%',#{params.yaopinContent},'%')
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>
